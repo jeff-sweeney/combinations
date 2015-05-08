@@ -1,0 +1,36 @@
+	Time-stamp: <2014-02-19 16:53:35 jsweeney>
+
+SUMMARY:
+
+This invention is an algorithm that lists combinations of
+non-repeating elements in an order that is easy for humans to use. It
+does this by making several improvements to a machine order
+algorithm. First, it exploits the fact that when an integer is
+repeatedly incremented or decremented the less significant bits change
+more rapidly than the more significant bits. Second, the integer that
+is incremented in the machine order algorithm is instead decremented
+and the orders of the set of elements and the combinations formed from
+them are reversed. Finally, subsets of the set of elements to combine
+are listed in order from a subset containing zero elements to one
+containing all the elements. For the previous illustration this
+invention would list the combinations in this order:
+
+ i  bits  combination
+---------------------
+ 0  0000   - - - -
+ 8  1000   A - - -
+ 4  0100   - B - -
+ 2  0010   - - C -
+ 1  0001   - - - D
+12  1100   A B - -
+10  1010   A - C -
+ 9  1001   A - - D
+ 6  0110   - B C -
+ 5  0101   - B - D
+ 3  0011   - - C D
+14  1110   A B C -
+13  1101   A B - D
+11  1011   A - C D
+ 7  0111   - B C D
+15  1111   A B C D
+

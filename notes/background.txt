@@ -1,0 +1,106 @@
+	Time-stamp: <2014-02-19 16:51:53 jsweeney>
+
+PROBLEM SOLVED:
+
+Sometimes it is necessary to list combinations[1] of non-repeating
+elements, either all possible combinations or a subset. This invention
+lists such combinations in an order expected by humans rather than in
+a machine order.
+
+
+KNOWN SOLUTION:
+
+There is an algorithm that lists combinations of non-repeating
+elements in a machine order. It involves forming an integer where each
+bit-position indicates the presence or absence of one of the elements
+in the set. When the integer is incremented, the bit pattern at each
+step represents one unique combination.
+
+Here is a simple example. Suppose we wish to list all possible
+combinations of the elements A, B, C and D. In this example, the
+number of elements 'n' is four. We form an integer 'i' that has n
+bit-positions. The lowest-order bit in position zero indicates the
+presence of element A, position one the presence of element B,
+position two the presence of C and position three the presence of
+D. The total number of possible combinations[2] including the empty or
+null combination is 2^n or in this example 16. We increment 'i' from
+zero up to 16 yielding the following bit patterns and combinations:
+
+ i  bits  combination
+---------------------
+ 0  0000   - - - -
+ 1  0001   A - - -
+ 2  0010   - B - -
+ 3  0011   A B - -
+ 4  0100   - - C -
+ 5  0101   A - C -
+ 6  0110   - B C -
+ 7  0111   A B C -
+ 8  1000   - - - D
+ 9  1001   A - - D
+10  1010   - B - D
+11  1011   A B - D
+12  1100   - - C D
+13  1101   A - C D
+14  1110   - B C D
+15  1111   A B C D
+
+This is a fast and foolproof method for listing all possible
+combinations of a set of non-repeating elements. It can also be
+modified to list subsets of combinations. For example, it can be used
+to list all combinations containing a specified number 'm' of the
+elements from the set of 'n' available elements. This is done by
+counting the number of set bits at each iteration and keeping only
+those iterations where 'm' bits are set.
+
+We can illustrate by extending the previous example. Suppose we wish
+to list all combinations that contain two elements of the set A, B, C
+and D. In this example m=2 and n=4. We iterate 'i' as before but this
+time we keep only those iterations where the number of set bits equals
+two:
+
+ i  bits  combination
+---------------------
+ 3  0011   A B - -
+ 5  0101   A - C -
+ 6  0110   - B C -
+ 9  1001   A - - D
+10  1010   - B - D
+12  1100   - - C D
+
+
+DRAWBACKS OF KNOWN SOLUTION:
+
+The problem with this method is that combinations are listed in a
+machine order and not in an order that is easy for humans to use. For
+example in the first illustration a human would likely list the
+combinations in this order:
+
+combination
+-----------
+- - - -
+A - - -
+- B - -
+- - C -
+- - - D
+A B - -
+A - C -
+A - - D
+- B C -
+- B - D
+- - C D
+A B C -
+A B - D
+A - C D
+- B C D
+A B C D
+
+And, as the number of elements in the set increases the disparity
+between machine and human ordering becomes more pronounced.
+
+
+[1] Combinations in the strict mathematical sense, not
+permutations. For example see: Jeffrey, Alan; page 59; "Handbook of
+Mathematical Formulas and Integrals"; 1995; Academic Press, Inc.
+
+[2] From a theory of combinatorics, ibid.

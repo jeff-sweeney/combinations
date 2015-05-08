@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Combinations" default="default" basedir=".">
+
+  <property name="inheritAll" value="false"/>
+  <property name="root.dir" location="${basedir}"/>
+  <property name="masterbuild.dir" location="${basedir}"/>
+  <property name="src.dir" location="${root.dir}/src"/>
+  <property name="output.dir" location="${masterbuild.dir}/output"/>
+  <property name="javac.debug" value="on"/>
+  <property name="build.type" value="debug"/>
+  <property name="build.dir" location="${output.dir}/${build.type}"/>
+  <property name="classes.dir" location="${root.dir}/${build.type}/classes"/>
+  <property name="build.jar" value="Combinations.jar"/>
+  
+  <target name="default" depends="jar"/>
+
+  <target name="compile">
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${build.dir}"/>
+    <javac
+        srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        encoding="UTF-8"
+        fork="yes"
+        includejavaruntime="false"
+        includeantruntime="false"
+        memoryInitialSize="256m" 
+        memoryMaximumSize="512m"
+        debug="${build.debug}"
+        optimize="${build.optimize}">
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile">
+    <mkdir dir="${build.dir}"/>   
+    <jar jarfile="${build.dir}/${build.jar}" basedir="${classes.dir}">
+      <manifest>
+	<attribute name="Main-Class" value="Combinations"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="test" depends="jar">
+    <java classname="Combinations" classpath="${classes.dir}">
+      <arg value="a"/>
+      <arg value="b"/>
+      <arg value="c"/>
+      <arg value="d"/>
+      <arg value="e"/>
+    </java>
+  </target>
+
+  <target name="clean">
+    <delete dir="${output.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+</project>

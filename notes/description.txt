@@ -1,0 +1,103 @@
+	Time-stamp: <2014-02-19 16:54:29 jsweeney>
+
+DESCRIPTION:
+
+A mathematical combination is a selection of mutually distinguishable
+elements from a set of elements without regard to their order of
+arrangement[1]. For example from the set of elements A, B, C and D,
+the combination (A,B,C,D) is the same as (A,C,B,D). However, it is
+sometimes desirable to present combinations in an order that is
+rational and useful to humans. In that case the representation
+(A,B,C,D) is preferred over (A,C,B,D) because the elements have an
+order understood by humans (alphabetic in this case) where B precedes
+C. Likewise with a list of many combinations from the same set of
+elements: (A,-,C,-) precedes (A,-,-,D); (A,-,C,-) precedes (-,B,C,-);
+(A,-,C,-) precedes (A,-,C,D); etc. We consider only combinations of
+non-repeating elements (CNE). We do not include combinations of
+repeating elements like (A,A,C,D), for example, where the element A is
+repeated twice. The task then is to present CNE in an order that is
+rational and useful to humans.
+
+
+All Combinations:
+
+The first algorithm lists all combinations of non-repeating elements
+(CNE) in an order that is easy for humans to use. It takes as input a
+set of 'n' elements sorted from most to least prominent. The algorithm
+is shown as a flow chart in diagram 1. It can be compared to diagram
+2, an algorithm that lists all CNE in a machine order. The highlighted
+nodes in diagram 1 are those that are added or differ from their
+counterparts in diagram 2. The set of n elements is labeled 's' in
+diagrams 1 and 2. Similar to the machine algorithm, this algorithm
+uses the binary representation of an integer labeled 'i' in diagrams 1
+and 2 to identify the elements of s that form the combination
+associated with i.
+
+The algorithm is comprised of three loops. The outer loop increments
+'m', the number of elements in the CNE, from zero to n. The m is
+compared to the count 'p' of bits in the binary representation of i
+that are set to one. If m matches the count then this i is
+examined. Otherwise, it is skipped. This filtering using m causes the
+CNE with zero elements to be presented first, followed by all the CNE
+with one element, then two elements, etc. until finally the CNE that
+contains all the elements is presented. This order of presentation is
+easy for humans to comprehend. It is not the order of the machine
+algorithm in diagram 2.
+
+The middle loop decrements the integer i. The upper limit of i is
+calculated in the first step of the algorithm. This limit is the total
+number 't' of all possible CNE for the given n, which is t=2^n. The
+loop decrements i from a maximum value of t-1 to zero. The machine
+algorithm in diagram 2 increments rather than decrements i.
+
+The inner loop increments a loop counter labeled 'j' in diagrams 1 and
+2 from zero to n. In this loop each bit of the binary representation
+of i is examined to identify the elements of the combination 'c'
+associated with i. If bit j is one and not zero then element (n-1)-j
+from set s is added to c at position (n-1)-j. Otherwise, the position
+(n-1)-j is left empty. The index (n-1)-j effectively reverses the
+order of s and c from their given order. The machine algorithm in
+diagram 2 does not reverse s and c.
+
+The three necessary aspects of the algorithm are filtering using m,
+decrementing i and reversing s and c. Together, they present the CNE
+in an order pleasing to humans and easy to use.
+
+There is a computational cost for filtering using m compared to the
+machine order algorithm. For situations where n is large and where
+performance is critical an additional calculation and check can be
+added to improve performance. The number of possible CNE for a given m
+is calculated as the binomial coefficient 'b', which is n! divided by
+m!(n-m)! where '!' is the factorial operator[2]. The number 'q' of CNE
+with m elements is accumulated and compared with b. Processing of i in
+the middle loop continues only while q is less than b. Otherwise, m is
+incremented and the procedure continues. This is shown in diagram 3
+where the highlighted nodes are those that are missing from diagram 1.
+
+
+Combinations of m Elements:
+
+The second algorithm lists the combinations of non-repeating elements
+(CNE) when 'm', the number of elements in the CNE, is a given. It is
+identical to the algorithm described above but with the outer loop
+incrementing over all m removed. This algorithm is shown as a flow
+chart in diagram 4. A comparable machine order algorithm that adds
+filtering using m is shown in diagram 5. The highlighted nodes in
+diagram 4 are those that differ from their counterparts in diagram 5.
+
+The two loops of this algorithm are identical to the middle and inner
+loops of the first algorithm. The two necessary aspects of this
+algorithm are decrementing i and reversing s and c. Together, they
+present the CNE for a given m in an order pleasing to humans and easy
+to use. There is no computational cost for this algorithm compared to
+the machine order algorithm because of the extra steps required in the
+machine order algorithm in order to filter using m. However, this
+algorithm can also benefit from the performance enhancement described
+for the first algorithm. This is shown in diagram 6 where the
+highlighted nodes are those that are missing from diagram 4.
+
+
+[1] Jeffrey, Alan; page 59; "Handbook of Mathematical Formulas and
+Integrals"; 1995; Academic Press, Inc.
+
+[2] ibid, page 59.
