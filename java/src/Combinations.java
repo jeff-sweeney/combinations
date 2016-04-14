@@ -171,7 +171,7 @@ public class Combinations
      */
     private static BigInteger binomialCoefficient( int n, int m )
     {
-        ArrayList<BigInteger> b = new ArrayList<BigInteger>( n + 1 );
+        ArrayList<BigInteger> b = new ArrayList<>(n + 1);
         b.add( BigInteger.ONE );
         for ( int i = 1; i <= n; ++i )
         {
