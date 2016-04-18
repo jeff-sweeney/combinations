@@ -115,6 +115,7 @@ object Combinations {
     }
   }
 
+  
   /** machine order for a specific m
     *
     * @param elements The set of elements
@@ -123,11 +124,10 @@ object Combinations {
     * @param u The total number of nonrepeating combinations for a specific m
     * @param m The number of elements to be combined
     * @param accumulator The current nonrepeating combination
-    * @param breaker The current number of nonrepeating combinations
+    * @param breaker The current count of combinations with m elements
     */
   @tailrec
   private def machineOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
-    // current count of combinations with m elements
     var q = breaker
 
     // Iterate through all combinations of nonrepeating elements, incrementing by one.
