@@ -42,7 +42,7 @@ object Combinations {
 
     // machine order for a specific m
     println("machine order, m=" + m + " for example:")
-    machineOrder(elements, n, t, m)
+    machineOrderM(elements, n, t, binomialCoefficient( n, m ), m )
   }
 
 
@@ -119,37 +119,37 @@ object Combinations {
     *
     * @param elements The set of elements
     * @param n The total number of elements
-    * @param t The total number of nonrepeating combinations
+    * @param t The total number of nonrepeating combinations for all m
+    * @param u The total number of nonrepeating combinations for a specific m
     * @param m The number of elements to be combined
+    * @param accumulator The current nonrepeating combination
+    * @param breaker The current number of nonrepeating combinations
     */
-  private def machineOrder( elements: Array[String], n: Int, t: BigInt, m: Int ) {
-    // total number of combinations with m elements
-    val b = binomialCoefficient( n, m )
-
+  @tailrec
+  private def machineOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
     // current count of combinations with m elements
-    var q = BigInt( 0 )
+    var q = breaker
 
     // Iterate through all combinations of nonrepeating elements, incrementing by one.
-      var i = BigInt( 0 )
-      while ( i < t && q < b ) {
-        if ( i.bitCount == m ) {
-          q = q + 1
-          val combination = new Array[String]( n )
-          val empty = "-"
+    if ( accumulator != t && breaker != u ) {
+      if ( accumulator.bitCount == m ) {
+        q = q + 1
+        val combination = new Array[String]( n )
+        val empty = "-"
 
-          // For all n elements test whether element j is present.
-          for ( j <- 0 until n ) {
-            // If present add it to the current combination.
-            if ( i.testBit( j ) )
-              combination( j ) = elements( j )
-            else
-              combination( j ) = empty
-          }
-
-          // List the current combination.
-          listCombination( combination )
+        // For all n elements test whether element j is present.
+        for ( j <- 0 until n ) {
+          // If present add it to the current combination.
+          if ( accumulator.testBit( j ) )
+            combination( j ) = elements( j )
+          else
+            combination( j ) = empty
         }
-        i = i + 1
+
+        // List the current combination.
+        listCombination( combination )
+      }
+      machineOrderM( elements, n, t, u, m, accumulator + 1, q )
     }
   }
 
