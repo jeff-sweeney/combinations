@@ -92,7 +92,7 @@ object Combinations {
     * @param elements The set of elements
     * @param n The total number of elements
     * @param t The total number of nonrepeating combinations
-    * @param accumulator The current number of nonrepeating combinations
+    * @param accumulator The current nonrepeating combination
     */
   @tailrec
   private def machineOrder( elements: Array[String], n: Int, t: BigInt, accumulator: BigInt = 0 ) {
