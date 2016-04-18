@@ -24,7 +24,7 @@ object Combinations {
     // human order for all m
     println("human order, m=0 to m=n:")
     for ( m <- 0 to n )
-      humanOrder( elements, n, t, m )
+      humanOrderM( elements, n, t, binomialCoefficient( n, m ), m, t - 1 )
     println("")
 
     // machine order for all m
@@ -37,7 +37,7 @@ object Combinations {
 
     // human order for a specific m
     println("human order, m=" + m + " for example:")
-    humanOrder(elements, n, t, m)
+    humanOrderM( elements, n, t, binomialCoefficient( n, m ), m, t - 1 )
     println("")
 
     // machine order for a specific m
@@ -46,47 +46,45 @@ object Combinations {
   }
 
 
-  /** human order
-    *
+  /** Human order for a specific m
     * @param elements The set of elements
-     * @param n The total number of elements
-     * @param t The total number of nonrepeating combinations
-     * @param m The number of elements to be combined
-     */
-    private def humanOrder( elements: Array[String], n: Int, t: BigInt, m: Int ) {
-      // total number of combinations with m elements
-      val b = binomialCoefficient( n, m )
-      // current count of combinations with m elements
-      var q = BigInt( 0 )
+    * @param n The total number of elements
+    * @param t The total number of nonrepeating combinations
+    * @param u The total number of nonrepeating combinations for a specific m
+    * @param m The number of elements to be combined
+    * @param accumulator The current nonrepeating combination
+    * @param breaker The current count of combinations with m elements
+    */
+  @tailrec
+  private def humanOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
+    var q = breaker
 
-      // Loop over all 2^n combinations, decrementing by one.
-      var i = t - BigInt( 1 )
-      while ( i >= BigInt( 0 ) && q != b ) {
-        // Check whether this is a combination of m elements.
-        if ( i.bitCount == m ) {
-          q = q + 1
-          val combination = new Array[String]( n )
-          val empty = "-"
-                    
-          // For all n elements test whether element j is present.
-          for ( j <- 0 until n )
-          {
-            // If present add it to the current combination in reverse order.  Reverse the
-            // order to take advantage of the fact that less significant bits change faster when
-            // incrementing or decrementing.
-            if ( i.testBit( j ) )
-              combination( n - 1 - j ) = elements( n - 1 - j )
-            else
-              combination( n - 1 - j ) = empty
-          }
+    // Recurse through all combinations of nonrepeating elements, decrementing by one.
+    if ( accumulator != 0 && breaker != u ) {
+      // Check whether this is a combination of m elements.
+      if ( accumulator.bitCount == m ) {
+        q = q + 1
+        val combination = new Array[String]( n )
+        val empty = "-"
 
-          // Process the current combination.
-          listCombination( combination )
+        // For all n elements test whether element j is present.
+        for ( j <- 0 until n ) {
+          // If present add it to the current combination in reverse order.  Reverse the
+          // order to take advantage of the fact that less significant bits change faster when
+          // incrementing or decrementing.
+          if ( accumulator.testBit( j ) )
+            combination( n - 1 - j ) = elements( n - 1 - j )
+          else
+            combination( n - 1 - j ) = empty
         }
-        i = i - 1
-      }
-    }
 
+        // Process the current combination.
+        listCombination( combination )
+      }
+      humanOrderM( elements, n, t, u, m, accumulator - 1, q )
+    }
+  }
+  
 
   /** machine order for all m. Recurse through all combinations of nonrepeating elements.
     * @param elements The set of elements
@@ -115,9 +113,8 @@ object Combinations {
     }
   }
 
-  
-  /** machine order for a specific m
-    *
+
+  /** Machine order for a specific m
     * @param elements The set of elements
     * @param n The total number of elements
     * @param t The total number of nonrepeating combinations for all m
@@ -130,8 +127,9 @@ object Combinations {
   private def machineOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
     var q = breaker
 
-    // Iterate through all combinations of nonrepeating elements, incrementing by one.
+    // Recurse through all combinations of nonrepeating elements, incrementing by one.
     if ( accumulator != t && breaker != u ) {
+      // Check whether this is a combination of m elements.
       if ( accumulator.bitCount == m ) {
         q = q + 1
         val combination = new Array[String]( n )
@@ -161,12 +159,14 @@ object Combinations {
   private def binomialCoefficient( n: Int, m: Int ): BigInt =
     factorial( n ) / ( factorial( m ) * factorial( n - m ) )
 
+
   /** Factorial used for binomial coefficient
     *  @param n The number for which the factorial is calculated
     */
   @tailrec
   private def factorial( n: Int, accumulator: BigInt = 1 ): BigInt =
     if ( n == 0 ) accumulator else factorial( n - 1, accumulator * n )
+
 
   /** Process the given combination. Here we just write it to the console.
     *
