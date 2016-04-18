@@ -18,7 +18,7 @@ object Combinations {
     // n is the number of elements
     val n = elements.length
 
-    // t is total number of nonrepeating combinations: 2^n
+    // t is total number of non-repeating combinations: 2^n
     val t = BigInt( 1 ) << n
 
     // human order for all m
@@ -49,18 +49,18 @@ object Combinations {
   /** Human order for a specific m
     * @param elements The set of elements
     * @param n The total number of elements
-    * @param t The total number of nonrepeating combinations
-    * @param u The total number of nonrepeating combinations for a specific m
+    * @param t The total number of non-repeating combinations
+    * @param u The total number of non-repeating combinations for a specific m
     * @param m The number of elements to be combined
-    * @param accumulator The current nonrepeating combination
+    * @param accumulator The current non-repeating combination
     * @param breaker The current count of combinations with m elements
     */
   @tailrec
   private def humanOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
     var q = breaker
 
-    // Recurse through all combinations of nonrepeating elements, decrementing by one.
-    if ( accumulator != 0 && breaker != u ) {
+    // Recurse through all combinations of non-repeating elements, decrementing by one.
+    if ( accumulator >= 0 && breaker < u ) {
       // Check whether this is a combination of m elements.
       if ( accumulator.bitCount == m ) {
         q = q + 1
@@ -86,15 +86,15 @@ object Combinations {
   }
   
 
-  /** machine order for all m. Recurse through all combinations of nonrepeating elements.
+  /** machine order for all m. Recurse through all combinations of non-repeating elements.
     * @param elements The set of elements
     * @param n The total number of elements
-    * @param t The total number of nonrepeating combinations
-    * @param accumulator The current nonrepeating combination
+    * @param t The total number of non-repeating combinations
+    * @param accumulator The current non-repeating combination
     */
   @tailrec
   private def machineOrder( elements: Array[String], n: Int, t: BigInt, accumulator: BigInt = 0 ) {
-    if ( accumulator != t ) {
+    if ( accumulator < t ) {
       val combination = new Array[String]( n )
       val empty = "-"
                     
@@ -117,18 +117,18 @@ object Combinations {
   /** Machine order for a specific m
     * @param elements The set of elements
     * @param n The total number of elements
-    * @param t The total number of nonrepeating combinations for all m
-    * @param u The total number of nonrepeating combinations for a specific m
+    * @param t The total number of non-repeating combinations for all m
+    * @param u The total number of non-repeating combinations for a specific m
     * @param m The number of elements to be combined
-    * @param accumulator The current nonrepeating combination
+    * @param accumulator The current non-repeating combination
     * @param breaker The current count of combinations with m elements
     */
   @tailrec
   private def machineOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
     var q = breaker
 
-    // Recurse through all combinations of nonrepeating elements, incrementing by one.
-    if ( accumulator != t && breaker != u ) {
+    // Recurse through all combinations of non-repeating elements, incrementing by one.
+    if ( accumulator < t && breaker < u ) {
       // Check whether this is a combination of m elements.
       if ( accumulator.bitCount == m ) {
         q = q + 1
