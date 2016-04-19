@@ -42,7 +42,7 @@ object Combinations {
   /** Human order for all m.
     * @param elements The set of elements
     */
-  private def humanOrder( elements: Array[String] ) {
+  def humanOrder( elements: Array[String] ) {
     for ( m <- 0 to elements.length )
       humanOrderM( elements, m )
   }
@@ -51,7 +51,7 @@ object Combinations {
     * @param elements The set of elements
     * @param m The number of elements to be combined
     */
-  private def humanOrderM( elements: Array[String], m: Int ) {
+  def humanOrderM( elements: Array[String], m: Int ) {
     // The possible number of non-repeating combinations for m
     val u = binomialCoefficient( elements.length, m )
 
@@ -95,7 +95,7 @@ object Combinations {
   /** Machine order for all m.
     * @param elements The set of elements
     */
-  private def machineOrder( elements: Array[String] ) {
+  def machineOrder( elements: Array[String] ) {
 
     // n is the number of elements
     val n = elements.length
@@ -135,7 +135,7 @@ object Combinations {
     * @param elements The set of elements
     * @param m The number of elements to be combined
     */
-  private def machineOrderM( elements: Array[String], m: Int ) {
+  def machineOrderM( elements: Array[String], m: Int ) {
     // The possible number of non-repeating combinations for a specific m
     val u = binomialCoefficient( elements.length, m )
 
