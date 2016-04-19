@@ -128,7 +128,8 @@ object Combinations {
 
 
   /** Factorial used for binomial coefficient
-    *  @param n The number for which the factorial is calculated
+    * @param n The number for which the factorial is calculated
+    * @param accumulator The current factorial
     */
   @tailrec
   private def factorial( n: Int, accumulator: BigInt = 1 ): BigInt =
