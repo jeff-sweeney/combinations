@@ -15,34 +15,51 @@ object Combinations {
     // prominent. The elements are lexical in this example but
     // there is no restriction that they be lexical.
 
-    // n is the number of elements
-    val n = elements.length
-
-    // t is the possible number of non-repeating combinations: 2**n
-    val t = BigInt( 1 ) << n
-
     // human order for all m
     println( "human order, m=0 to m=n:" )
-    for ( m <- elements.indices )
-      humanOrderM( elements, m, binomialCoefficient( n, m ), t - 1 )
+    humanOrder( elements )
     println( "" )
 
     // machine order for all m
     println( "machine order, m=0 to m=n:" )
-    machineOrder( elements, t )
+    machineOrder( elements )
     println( "" )
 
 
-    val m = 2
+    val m: Int = 2
 
     // human order for a specific m
     println( "human order, m=" + m + " for example:" )
-    humanOrderM( elements, m, binomialCoefficient( n, m ), t - 1 )
+    humanOrderM( elements, m )
     println( "" )
 
     // machine order for a specific m
     println( "machine order, m=" + m + " for example:" )
-    machineOrderM( elements, m, binomialCoefficient( n, m ) )
+    machineOrderM( elements, m )
+  }
+
+
+  /** Human order for all m.
+    * @param elements The set of elements
+    */
+  private def humanOrder( elements: Array[String] ) {
+    for ( m <- 0 to elements.length )
+      humanOrderM( elements, m )
+  }
+
+  /** Human order for a specific m.
+    * @param elements The set of elements
+    * @param m The number of elements to be combined
+    */
+  private def humanOrderM( elements: Array[String], m: Int ) {
+    // The possible number of non-repeating combinations for m
+    val u = binomialCoefficient( elements.length, m )
+
+    // The bit representation of the starting non-repeating combination
+    val bits = ( BigInt( 1 ) << elements.length ) - 1
+
+    // Recurse
+    humanOrderM( elements, m, u, bits )
   }
 
 
@@ -75,21 +92,55 @@ object Combinations {
   }
   
 
-  /** Machine order for a specific m. Start with bits = 0. Recurse
-    * through all combinations of non-repeating elements, incrementing
-    * by one.
+  /** Machine order for all m.
+    * @param elements The set of elements
+    */
+  private def machineOrder( elements: Array[String] ) {
+
+    // n is the number of elements
+    val n = elements.length
+
+    // t is the possible number of non-repeating combinations: 2**n
+    val t = BigInt( 1 ) << n
+
+    // Recurse
+    machineOrder( elements, t )
+  }
+  
+
+  /** Machine order for all m. Start with bits = 0. Recurse through all
+    * combinations of non-repeating elements, incrementing by one.
     * @param elements The set of elements
     * @param t The possible number of non-repeating combinations
     * @param bits The bit representation of the current non-repeating combination
     */
   @tailrec
   private def machineOrder( elements: Array[String], t: BigInt, bits: BigInt = 0 ) {
+
+    // n is the number of elements
+    val n = elements.length
+
+    // t is the possible number of non-repeating combinations: 2**n
+    val t = BigInt( 1 ) << n
     if ( bits < t ) {
       // Store and list the current combination.
       listCombination( storeCombination( elements, bits ) )
 
       machineOrder( elements, t, bits + 1 )
     }
+  }
+
+
+  /** Machine order for a specific m.
+    * @param elements The set of elements
+    * @param m The number of elements to be combined
+    */
+  private def machineOrderM( elements: Array[String], m: Int ) {
+    // The possible number of non-repeating combinations for a specific m
+    val u = binomialCoefficient( elements.length, m )
+
+    // Recurse
+    machineOrderM( elements, m, u )
   }
 
 
