@@ -64,22 +64,11 @@ object Combinations {
       // Check whether this is a combination of m elements.
       if ( accumulator.bitCount == m ) {
         q = q + 1
-        val combination = new Array[String]( n )
-        val empty = "-"
 
-        // For all n elements test whether element j is present.
-        for ( j <- 0 until n ) {
-          // If present add it to the current combination in reverse order.  Reverse the
-          // order to take advantage of the fact that less significant bits change faster when
-          // incrementing or decrementing.
-          if ( accumulator.testBit( j ) )
-            combination( n - 1 - j ) = elements( n - 1 - j )
-          else
-            combination( n - 1 - j ) = empty
-        }
-
-        // Process the current combination.
-        listCombination( combination )
+        // Store and list the current combination. Reverse the order
+        // to take advantage of the fact that less significant bits
+        // change faster when incrementing or decrementing.
+        listCombination( storeCombination( elements.reverse, n, accumulator ).reverse )
       }
       humanOrderM( elements, n, t, u, m, accumulator - 1, q )
     }
@@ -95,20 +84,9 @@ object Combinations {
   @tailrec
   private def machineOrder( elements: Array[String], n: Int, t: BigInt, accumulator: BigInt = 0 ) {
     if ( accumulator < t ) {
-      val combination = new Array[String]( n )
-      val empty = "-"
-                    
-      // For all n elements test whether element j is present.
-      for ( j <- 0 until n ) {
-        // If present add it to the current combination.
-        if ( accumulator.testBit( j ) )
-          combination( j ) = elements( j )
-        else
-          combination( j ) = empty
-      }
+      // Store and list the current combination.
+      listCombination( storeCombination( elements, n, accumulator ) )
 
-      // List the current combination.
-      listCombination( combination )
       machineOrder( elements, n, t, accumulator + 1 )
     }
   }
@@ -132,20 +110,9 @@ object Combinations {
       // Check whether this is a combination of m elements.
       if ( accumulator.bitCount == m ) {
         q = q + 1
-        val combination = new Array[String]( n )
-        val empty = "-"
 
-        // For all n elements test whether element j is present.
-        for ( j <- 0 until n ) {
-          // If present add it to the current combination.
-          if ( accumulator.testBit( j ) )
-            combination( j ) = elements( j )
-          else
-            combination( j ) = empty
-        }
-
-        // List the current combination.
-        listCombination( combination )
+        // Store and list the current combination.
+        listCombination( storeCombination( elements, n, accumulator ) )
       }
       machineOrderM( elements, n, t, u, m, accumulator + 1, q )
     }
@@ -166,6 +133,28 @@ object Combinations {
   @tailrec
   private def factorial( n: Int, accumulator: BigInt = 1 ): BigInt =
     if ( n == 0 ) accumulator else factorial( n - 1, accumulator * n )
+
+
+
+  /** Store the combination
+    * @param elements The set of elements
+    * @param n The total number of elements
+    * @param accumulator The current non-repeating combination
+    */
+  private def storeCombination( elements: Array[String], n: Int, accumulator: BigInt = 0 ): Array[String] = {
+    val combination = new Array[String]( n )
+    val empty = "-"
+
+    // For all n elements test whether element j is present.
+    for ( j <- 0 until n ) {
+      // If present add it to the current combination.
+      if ( accumulator.testBit( j ) )
+        combination( j ) = elements( j )
+      else
+        combination( j ) = empty
+    }
+    combination
+  }
 
 
   /** Process the given combination. Here we just write it to the console.
