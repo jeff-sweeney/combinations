@@ -8,7 +8,7 @@ import scala.annotation._
  */
 object Combinations {
   /** Test driver.
-    * Usage: java -jar Combinations.jar a b c d e
+    * Usage: scala Combinations A B C D E
     */
   def main( elements: Array[String] ) {
     // Assume the elements are arranged from most to least
@@ -18,103 +18,104 @@ object Combinations {
     // n is the number of elements
     val n = elements.length
 
-    // t is total number of non-repeating combinations: 2^n
+    // t is the possible number of non-repeating combinations: 2**n
     val t = BigInt( 1 ) << n
 
     // human order for all m
-    println("human order, m=0 to m=n:")
-    for ( m <- 0 to n )
-      humanOrderM( elements, n, t, binomialCoefficient( n, m ), m, t - 1 )
-    println("")
+    println( "human order, m=0 to m=n:" )
+    for ( m <- elements.indices )
+      humanOrderM( elements, m, binomialCoefficient( n, m ), t - 1 )
+    println( "" )
 
     // machine order for all m
-    println("machine order, m=0 to m=n:")
-    machineOrder(elements, n, t)
-    println("")
+    println( "machine order, m=0 to m=n:" )
+    machineOrder( elements, t )
+    println( "" )
 
 
     val m = 2
 
     // human order for a specific m
-    println("human order, m=" + m + " for example:")
-    humanOrderM( elements, n, t, binomialCoefficient( n, m ), m, t - 1 )
-    println("")
+    println( "human order, m=" + m + " for example:" )
+    humanOrderM( elements, m, binomialCoefficient( n, m ), t - 1 )
+    println( "" )
 
     // machine order for a specific m
-    println("machine order, m=" + m + " for example:")
-    machineOrderM(elements, n, t, binomialCoefficient( n, m ), m )
+    println( "machine order, m=" + m + " for example:" )
+    machineOrderM( elements, m, binomialCoefficient( n, m ) )
   }
 
 
-  /** Human order for a specific m
+  /** Human order for a specific m. Start with bits = 2**n - 1. Recurse
+    * through all combinations of non-repeating elements, decrementing
+    * by one.
     * @param elements The set of elements
-    * @param n The total number of elements
-    * @param t The total number of non-repeating combinations
-    * @param u The total number of non-repeating combinations for a specific m
     * @param m The number of elements to be combined
-    * @param accumulator The current non-repeating combination
-    * @param breaker The current count of combinations with m elements
+    * @param u The possible number of non-repeating combinations for m
+    * @param bits The bit representation of the current non-repeating combination
+    * @param count The current count of combinations with m elements
     */
   @tailrec
-  private def humanOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
-    var q = breaker
-
-    // Recurse through all combinations of non-repeating elements, decrementing by one.
-    if ( accumulator >= 0 && breaker < u ) {
+  private def humanOrderM( elements: Array[String], m: Int, u: BigInt, bits: BigInt, count: BigInt = 0 ) {
+    //  check whether count is less than the possible number of non-repeating combinations for m
+    if ( count < u ) {
       // Check whether this is a combination of m elements.
-      if ( accumulator.bitCount == m ) {
-        q = q + 1
-
+      if ( bits.bitCount == m ) {
         // Store and list the current combination. Reverse the order
         // to take advantage of the fact that less significant bits
         // change faster when incrementing or decrementing.
-        listCombination( storeCombination( elements.reverse, n, accumulator ).reverse )
+        listCombination( storeCombination( elements.reverse, bits ).reverse )
+
+        humanOrderM( elements, m, u, bits - 1, count + 1 )
       }
-      humanOrderM( elements, n, t, u, m, accumulator - 1, q )
+      else {
+        humanOrderM( elements, m, u, bits - 1, count )
+      }
     }
   }
   
 
-  /** machine order for all m. Recurse through all combinations of non-repeating elements.
+  /** Machine order for a specific m. Start with bits = 0. Recurse
+    * through all combinations of non-repeating elements, incrementing
+    * by one.
     * @param elements The set of elements
-    * @param n The total number of elements
-    * @param t The total number of non-repeating combinations
-    * @param accumulator The current non-repeating combination
+    * @param t The possible number of non-repeating combinations
+    * @param bits The bit representation of the current non-repeating combination
     */
   @tailrec
-  private def machineOrder( elements: Array[String], n: Int, t: BigInt, accumulator: BigInt = 0 ) {
-    if ( accumulator < t ) {
+  private def machineOrder( elements: Array[String], t: BigInt, bits: BigInt = 0 ) {
+    if ( bits < t ) {
       // Store and list the current combination.
-      listCombination( storeCombination( elements, n, accumulator ) )
+      listCombination( storeCombination( elements, bits ) )
 
-      machineOrder( elements, n, t, accumulator + 1 )
+      machineOrder( elements, t, bits + 1 )
     }
   }
 
 
-  /** Machine order for a specific m
+  /** Machine order for a specific m. Start with bits = 0. Recurse
+    * through all combinations of non-repeating elements, incrementing
+    * by one.
     * @param elements The set of elements
-    * @param n The total number of elements
-    * @param t The total number of non-repeating combinations for all m
-    * @param u The total number of non-repeating combinations for a specific m
     * @param m The number of elements to be combined
-    * @param accumulator The current non-repeating combination
-    * @param breaker The current count of combinations with m elements
+    * @param u The possible number of non-repeating combinations for a specific m
+    * @param bits The bit representation of the current non-repeating combination
+    * @param count The current count of combinations with m elements
     */
   @tailrec
-  private def machineOrderM( elements: Array[String], n: Int, t: BigInt, u: BigInt, m: Int, accumulator: BigInt = 0, breaker: BigInt = 0 ) {
-    var q = breaker
-
-    // Recurse through all combinations of non-repeating elements, incrementing by one.
-    if ( accumulator < t && breaker < u ) {
+  private def machineOrderM( elements: Array[String], m: Int, u: BigInt, bits: BigInt = 0, count: BigInt = 0 ) {
+    //  check whether count is less than the possible number of non-repeating combinations for m
+    if ( count < u ) {
       // Check whether this is a combination of m elements.
-      if ( accumulator.bitCount == m ) {
-        q = q + 1
-
+      if ( bits.bitCount == m ) {
         // Store and list the current combination.
-        listCombination( storeCombination( elements, n, accumulator ) )
+        listCombination( storeCombination( elements, bits ) )
+
+        machineOrderM( elements, m, u, bits + 1, count + 1 )
       }
-      machineOrderM( elements, n, t, u, m, accumulator + 1, q )
+      else {
+        machineOrderM( elements, m, u, bits + 1, count )
+      }
     }
   }
 
@@ -139,17 +140,16 @@ object Combinations {
 
   /** Store the combination
     * @param elements The set of elements
-    * @param n The total number of elements
-    * @param accumulator The current non-repeating combination
+    * @param bits The bit representation of the current non-repeating combination
     */
-  private def storeCombination( elements: Array[String], n: Int, accumulator: BigInt = 0 ): Array[String] = {
-    val combination = new Array[String]( n )
+  private def storeCombination( elements: Array[String], bits: BigInt = 0 ): Array[String] = {
+    val combination = new Array[String]( elements.length )
     val empty = "-"
 
     // For all n elements test whether element j is present.
-    for ( j <- 0 until n ) {
+    for ( j <- elements.indices ) {
       // If present add it to the current combination.
-      if ( accumulator.testBit( j ) )
+      if ( bits.testBit( j ) )
         combination( j ) = elements( j )
       else
         combination( j ) = empty
